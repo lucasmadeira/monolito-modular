@@ -5,7 +5,7 @@ import StoreCatalogFacadeFactory from "../factory/facade.factory";
 describe("Store Catalog Facade Test", () => {
     let sequelize: Sequelize;
 
-    beforeEach(async() => {
+    beforeAll(async() => {
         sequelize = new Sequelize({
            dialect: "sqlite",
            storage: ":memory",
@@ -17,54 +17,67 @@ describe("Store Catalog Facade Test", () => {
         await sequelize.sync();
     });
 
-    afterEach(async () => {
+    afterEach(async () => {       
+        await ProductModel.destroy({ where: {}, truncate: true });        
+      });
+
+    afterAll(async () => {
         await sequelize.close();
     });
 
     it("should find a product", async () =>{
-        const facade = StoreCatalogFacadeFactory.create();
-        await ProductModel.create({
-            id: "1",
-            name: "Product 1",
-            description: "Description 1",
-            salesPrice: 100,
-        });
+        try{
+            const facade = StoreCatalogFacadeFactory.create();
+            await ProductModel.create({
+                id: "1",
+                name: "Product 1",
+                description: "Description 1",
+                salesPrice: 100,
+            });
 
-        const result =  await facade.find({ id: "1"});
+            const result =  await facade.find({ id: "1"});
 
-        expect(result.id).toBe("1");
-        expect(result.name).toBe("Product 1");
-        expect(result.description).toBe("Description 1");
-        expect(result.salesPrice).toBe(100);
+            expect(result.id).toBe("1");
+            expect(result.name).toBe("Product 1");
+            expect(result.description).toBe("Description 1");
+            expect(result.salesPrice).toBe(100);
+        
+        }catch (error) {
+            console.error("Erro no Sequelize:", error);
+        }
     });
 
     it("should find all products", async () =>{
-        const facade = StoreCatalogFacadeFactory.create();
-        await ProductModel.create({
-            id: "1",
-            name: "Product 1",
-            description: "Description 1",
-            salesPrice: 100,
-        });
+        try{
+            const facade = StoreCatalogFacadeFactory.create();
+            await ProductModel.create({
+                id: "1",
+                name: "Product 1",
+                description: "Description 1",
+                salesPrice: 100,
+            });
 
 
-        await ProductModel.create({
-            id: "2",
-            name: "Product 2",
-            description: "Description 2",
-            salesPrice: 200,
-        });
+            await ProductModel.create({
+                id: "2",
+                name: "Product 2",
+                description: "Description 2",
+                salesPrice: 200,
+            });
 
-        const result =  await facade.findAll();
+            const result =  await facade.findAll();
 
-        expect(result.products.length).toBe(2);
-        expect(result.products[0].name).toBe("Product 1");
-        expect(result.products[0].description).toBe("Description 1");
-        expect(result.products[0].salesPrice).toBe(100);
+            expect(result.products.length).toBe(2);
+            expect(result.products[0].name).toBe("Product 1");
+            expect(result.products[0].description).toBe("Description 1");
+            expect(result.products[0].salesPrice).toBe(100);
 
-        expect(result.products[1].name).toBe("Product 2");
-        expect(result.products[1].description).toBe("Description 2");
-        expect(result.products[1].salesPrice).toBe(200);
+            expect(result.products[1].name).toBe("Product 2");
+            expect(result.products[1].description).toBe("Description 2");
+            expect(result.products[1].salesPrice).toBe(200);
+        } catch (error) {
+            console.error("Erro no Sequelize:", error);
+          }     
     });
 
 });

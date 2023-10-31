@@ -7,7 +7,7 @@ import ProductRepository from "./product.repository";
 describe("Product Repository test", () => {
     let sequelize: Sequelize;
 
-    beforeEach(async() => {
+    beforeAll(async() => {
         sequelize = new Sequelize({
            dialect: "sqlite",
            storage: ":memory",
@@ -19,7 +19,11 @@ describe("Product Repository test", () => {
         await sequelize.sync();
     });
 
-    afterEach(async () => {
+    afterEach(async () => {       
+        await ProductModel.destroy({ where: {}, truncate: true });        
+      });
+
+    afterAll(async () => {
         await sequelize.close();
     });
 

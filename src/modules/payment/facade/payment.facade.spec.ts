@@ -8,7 +8,7 @@ import PaymentFacadeFactory from "../factory/payment.facade.factory";
 describe("PaymentFacade test", () => {
     let sequelize: Sequelize;
 
-    beforeEach(async() => {
+    beforeAll(async() => {
         sequelize = new Sequelize({
            dialect: "sqlite",
            storage: ":memory",
@@ -20,7 +20,11 @@ describe("PaymentFacade test", () => {
         await sequelize.sync();
     });
 
-    afterEach(async () => {
+    afterEach(async () => {       
+        await TransactionModel.destroy({ where: {}, truncate: true });        
+      });
+
+    afterAll(async () => {
         await sequelize.close();
     });
     

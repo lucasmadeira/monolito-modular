@@ -9,7 +9,7 @@ import ClientAdmFacadeFactory from "../factory/client-adm.facade.factory";
 describe("ClientAdmFacade test", () => {
     let sequelize: Sequelize;
 
-    beforeEach(async() => {
+    beforeAll(async() => {
         sequelize = new Sequelize({
            dialect: "sqlite",
            storage: ":memory",
@@ -21,7 +21,15 @@ describe("ClientAdmFacade test", () => {
         await sequelize.sync();
     });
 
-    afterEach(async () => {
+    afterEach(async () => {   
+        try{    
+            await ClientModel.destroy({ where: {}, truncate: true });        
+        } catch (error) {
+            console.error("Erro no Sequelize:", error);
+          }    
+      });
+
+    afterAll(async () => {
         await sequelize.close();
     });
 

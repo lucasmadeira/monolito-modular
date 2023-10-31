@@ -7,7 +7,7 @@ import TransactionRepository from "./transaction.repository";
 describe("Transaction Repository test", () => {
     let sequelize: Sequelize;
 
-    beforeEach(async() => {
+    beforeAll(async() => {
         sequelize = new Sequelize({
            dialect: "sqlite",
            storage: ":memory",
@@ -19,9 +19,14 @@ describe("Transaction Repository test", () => {
         await sequelize.sync();
     });
 
-    afterEach(async () => {
+    afterEach(async () => {       
+        await TransactionModel.destroy({ where: {}, truncate: true });        
+      });
+
+    afterAll(async () => {
         await sequelize.close();
     });
+    
 
     it("should save a transaction", async() => {
        const  transaction = new Transaction({

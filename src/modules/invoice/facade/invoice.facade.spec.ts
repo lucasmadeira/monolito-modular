@@ -10,7 +10,7 @@ import InvoiceFacadeFactory from "../factory/InvoiceFacadeFactory";
 describe("InvoiceFacade test", () => {
     let sequelize: Sequelize;
 
-    beforeEach(async() => {
+    beforeAll(async() => {
         sequelize = new Sequelize({
            dialect: "sqlite",
            storage: ":memory",
@@ -22,7 +22,12 @@ describe("InvoiceFacade test", () => {
         await sequelize.sync();
     });
 
-    afterEach(async () => {
+    afterEach(async () => {       
+        await InvoiceItemsModel.destroy({ where: {}, truncate: true });
+        await InvoiceModel.destroy({ where: {}, truncate: true });        
+      });
+
+    afterAll(async () => {
         await sequelize.close();
     });
 

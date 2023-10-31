@@ -11,7 +11,7 @@ describe("Invoice repository test", () =>{
 
     let sequelize: Sequelize;
 
-    beforeEach( async () => {
+    beforeAll( async () => {
         sequelize = new Sequelize({
             dialect: "sqlite",
             storage: ":memory:",
@@ -23,7 +23,12 @@ describe("Invoice repository test", () =>{
 
     });
 
-    afterEach(async () => {
+    afterEach(async () => {       
+        await InvoiceItemsModel.destroy({ where: {}, truncate: true });
+        await InvoiceModel.destroy({ where: {}, truncate: true });        
+      });
+
+    afterAll(async () => {
         await sequelize.close();
     }); 
 
